@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="button_stroke">#03A9F4</color>
+    <color name="button_disabled">#5D696E</color>
+
+
+    <color name="game_bg">#0D1129</color>
+    <color name="game_untouched_circle_fill">#03A9F4</color>
+    <color name="game_touched_circle_fill">#BF5CB2</color>
+    <color name="game_untouched_lines">#6B6D73</color>
+
+    <color name="game_untouched_circle_stroke">#FF018786</color>
+    <color name="game_touched_circle_stroke">#2196F3</color>
+    <color name="game_touched_linked_circle_stroke">#DA88A4</color>
+    <color name="game_touched_linked_circle_fill">#E91E63</color>
+    <color name="game_touched_lines">#E91E63</color>
+</resources>

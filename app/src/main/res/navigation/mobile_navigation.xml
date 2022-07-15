@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.jagerlipton.dots_lines.ui.home.HomeFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_options"
+            app:destination="@id/navigation_options"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/navigation_home"
+            app:popUpToInclusive="false" />
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_game2"
+            app:destination="@id/navigation_game"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/navigation_home"
+            app:popUpToInclusive="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_game"
+        android:name="com.jagerlipton.dots_lines.ui.game.GameFragment"
+        android:label="@string/title_game"
+        tools:layout="@layout/fragment_game" >
+        <action
+            android:id="@+id/action_navigation_game_to_navigation_home"
+            app:destination="@id/navigation_home"
+            app:launchSingleTop="false"
+            app:popUpToInclusive="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_options"
+        android:name="com.jagerlipton.dots_lines.ui.options.OptionsFragment"
+        android:label="@string/title_options"
+        tools:layout="@layout/fragment_options" >
+        <action
+            android:id="@+id/action_navigation_options_to_navigation_game"
+            app:destination="@id/navigation_game"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/navigation_home"
+            app:popUpToInclusive="false" />
+        <action
+            android:id="@+id/action_navigation_options_to_navigation_home"
+            app:destination="@id/navigation_home"
+            app:popUpTo="@id/navigation_home"
+            app:popUpToInclusive="true" />
+    </fragment>
+</navigation>
