@@ -12,29 +12,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="30dp" />
+        app:layout_constraintGuide_begin="@dimen/guideline_margin" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/startGuideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="30dp" />
+        app:layout_constraintGuide_begin="@dimen/guideline_margin" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/endGuideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_end="30dp" />
+        app:layout_constraintGuide_end="@dimen/guideline_margin" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/bottomGuideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_end="30dp" />
-
+        app:layout_constraintGuide_end="@dimen/guideline_margin" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/editTextDotCount"
@@ -42,7 +41,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="@string/dot_count"
-        app:cornerRadius="5dp"
+        app:cornerRadius="@dimen/button_corner_radius"
         app:layout_constraintBottom_toTopOf="@+id/editTextMaxLinks"
         app:layout_constraintEnd_toEndOf="@id/endGuideline"
         app:layout_constraintStart_toStartOf="@id/startGuideline"
@@ -63,9 +62,9 @@
         style="@style/CustomOutlineBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/edit_margin"
         android:hint="@string/max_count_links_for_one_dot"
-        app:cornerRadius="5dp"
+        app:cornerRadius="@dimen/edit_corner_radius"
         app:layout_constraintBottom_toTopOf="@+id/editTextRadius"
         app:layout_constraintEnd_toEndOf="@id/endGuideline"
         app:layout_constraintStart_toStartOf="@id/startGuideline"
@@ -86,12 +85,11 @@
         style="@style/CustomOutlineBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/edit_margin"
         android:hint="@string/radius"
-        app:cornerRadius="5dp"
+        app:cornerRadius="@dimen/edit_corner_radius"
         app:layout_constraintBottom_toTopOf="@+id/buttonNewGame"
         app:layout_constraintEnd_toEndOf="@id/endGuideline"
-
         app:layout_constraintStart_toStartOf="@id/startGuideline"
         app:layout_constraintTop_toBottomOf="@id/editTextMaxLinks"
         app:layout_constraintVertical_chainStyle="spread_inside">
@@ -105,7 +103,6 @@
             android:textColor="@color/text_input_layout_stroke_color" />
     </com.google.android.material.textfield.TextInputLayout>
 
-
     <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonNewGame"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
@@ -113,7 +110,7 @@
         android:layout_height="wrap_content"
         android:text="@string/start_game"
         android:textColor="@color/button_stroke"
-        app:cornerRadius="5dp"
+        app:cornerRadius="@dimen/button_corner_radius"
         app:layout_constraintBottom_toBottomOf="@id/bottomGuideline"
         app:layout_constraintEnd_toEndOf="@id/endGuideline"
         app:layout_constraintStart_toStartOf="@id/startGuideline"

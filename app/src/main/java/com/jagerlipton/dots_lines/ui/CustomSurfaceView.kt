@@ -2,8 +2,10 @@ package com.jagerlipton.dots_lines.ui
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.PixelFormat
 import android.os.Build
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
@@ -25,7 +27,7 @@ import kotlin.math.sqrt
 class CustomSurfaceView(context: Context, attributes: AttributeSet) :
     SurfaceView(context, attributes),
     SurfaceHolder.Callback {
-    private val thread: GameThread
+    private lateinit var thread: GameThread
     private var dotList: MutableList<Dot> = mutableListOf()
     private var linesSet: HashSet<Line> = HashSet()
     private var circleNumber: Int = -1
@@ -36,7 +38,7 @@ class CustomSurfaceView(context: Context, attributes: AttributeSet) :
 
     init {
         holder.addCallback(this)
-        thread = GameThread(holder, this)
+        holder.setFormat(PixelFormat.TRANSLUCENT)
         isFocusable = true
     }
 
@@ -75,6 +77,39 @@ class CustomSurfaceView(context: Context, attributes: AttributeSet) :
         }
     }
 
+    private fun createGame(dotCount: Int, maxLinksCount: Int, radius: Int) {
+        for (i: Int in 0 until dotCount) {
+            dotList.add(Dot(i, 0, 0, radius, HashSet()))
+        }
+        alignmentDots(dotList)
+        generateLines(dotList, maxLinksCount)
+    }
+
+    override fun surfaceCreated(p0: SurfaceHolder) {
+        onLaunchSurface()
+        thread = GameThread(holder, this)
+        thread.setRunning(true)
+        thread.start()
+    }
+
+    override fun surfaceChanged(p0: SurfaceHolder, p1: Int, p2: Int, p3: Int) {
+        // TODO("Not yet implemented")
+    }
+
+    override fun surfaceDestroyed(p0: SurfaceHolder) {
+        saveGame()
+        var retry = true
+        while (retry) {
+            try {
+                thread.setRunning(false)
+                thread.join()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            retry = false
+        }
+    }
+
     private fun getGameColors(): GameColors {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             return GameColors(
@@ -100,7 +135,6 @@ class CustomSurfaceView(context: Context, attributes: AttributeSet) :
             resources.getColor(R.color.game_bg)
         )
     }
-
 
     private fun patternCircle(list: List<Dot>) {
         val stepAngle: Double = (2 * PI / list.size)
@@ -245,39 +279,6 @@ class CustomSurfaceView(context: Context, attributes: AttributeSet) :
             }
     }
 
-    private fun createGame(dotCount: Int, maxLinksCount: Int, radius: Int) {
-        for (i: Int in 0 until dotCount) {
-            dotList.add(Dot(i, 0, 0, radius, HashSet()))
-        }
-        alignmentDots(dotList)
-        generateLines(dotList, maxLinksCount)
-    }
-
-    override fun surfaceCreated(p0: SurfaceHolder) {
-        onLaunchSurface()
-        thread.setRunning(true)
-        thread.start()
-    }
-
-    override fun surfaceChanged(p0: SurfaceHolder, p1: Int, p2: Int, p3: Int) {
-        // TODO("Not yet implemented")
-    }
-
-    override fun surfaceDestroyed(p0: SurfaceHolder) {
-        var retry = true
-        while (retry) {
-            try {
-                thread.setRunning(false)
-                thread.join()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-            retry = false
-        }
-        saveGame()
-    }
-
-
     private fun pointInsideCircle(circleX: Int, circleY: Int, dotX: Int, dotY: Int, radius: Int): Boolean {
         val FATFINGER = 20
         return ((circleX - dotX) * (circleX - dotX) + (circleY - dotY) * (circleY - dotY) <= (radius + FATFINGER) * (radius + FATFINGER))
@@ -421,7 +422,7 @@ class CustomSurfaceView(context: Context, attributes: AttributeSet) :
                     }
                 }
             }
-            sleep(0, 1)
+            sleep(0, 2)
             i += 1
             if (i >= dotList.size) i = 0
         }

@@ -11,7 +11,7 @@
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
+
         <item name="android:navigationBarColor">@color/game_bg</item>
     </style>
 
@@ -20,6 +20,5 @@
         <item name="android:textColorHint">@color/button_stroke</item>
         <item name="hintTextColor">@color/button_stroke</item>
     </style>
-
 
 </resources>

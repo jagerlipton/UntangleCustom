@@ -7,6 +7,7 @@
     android:background="@color/game_bg">
 
     <fragment
+        android:background="@color/game_bg"
         android:id="@+id/nav_host_fragment_activity_main"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
