@@ -20,16 +20,14 @@ class GameThread(
         var timeMillis: Long
         var waitTime: Long
         val targetTime = (1000 / targetFPS).toLong()
-
         while (running) {
             startTime = System.nanoTime()
             canvas = null
-
             try {
                 canvas = this.surfaceHolder.lockCanvas()
                 synchronized(surfaceHolder) {
-                    this.customSurfaceView.update()
-                    this.customSurfaceView.draw(canvas!!)
+                   if(canvas!=null)  this.customSurfaceView.update()
+                   if(canvas!=null) this.customSurfaceView.draw(canvas!!)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -42,12 +40,10 @@ class GameThread(
                     }
                 }
             }
-
             timeMillis = (System.nanoTime() - startTime) / 1000000
             waitTime = targetTime - timeMillis
-
             try {
-                sleep(waitTime)
+                if (waitTime>0) sleep(waitTime)
             } catch (e: Exception) {
                 e.printStackTrace()
             }

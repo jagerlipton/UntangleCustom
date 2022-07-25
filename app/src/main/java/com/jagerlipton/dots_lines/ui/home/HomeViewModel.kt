@@ -6,12 +6,10 @@ import androidx.lifecycle.ViewModel
 import com.jagerlipton.dots_lines.storage.storage.IStorage
 
 class HomeViewModel(private val storage: IStorage) : ViewModel() {
-    private val gameOver = MutableLiveData(storage.loadGameOverState())
-    fun isGameOver(): LiveData<Boolean> {
-        return gameOver
-    }
+    private val _gameOver = MutableLiveData(storage.loadGameOverState())
+    val gameOver: LiveData<Boolean> get() = _gameOver
 
     fun loadPrefs() {
-        gameOver.value = storage.loadGameOverState()
+        _gameOver.value = storage.loadGameOverState()
     }
 }

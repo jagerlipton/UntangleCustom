@@ -17,7 +17,7 @@ class GameFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_NOSENSOR
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LOCKED
         _binding = FragmentGameBinding.inflate(inflater, container, false)
         return binding.root
     }

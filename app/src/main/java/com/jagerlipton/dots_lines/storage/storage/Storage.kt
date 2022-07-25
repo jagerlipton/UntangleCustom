@@ -11,7 +11,7 @@ import com.jagerlipton.dots_lines.storage.storage.model.StorageLine
 import java.io.IOException
 
 
-class Storage(private val context: Context) : IStorage {
+class Storage(context: Context) : IStorage {
     private val APP_PREFERENCES = "gameSettings"
     private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
@@ -121,7 +121,7 @@ class Storage(private val context: Context) : IStorage {
     }
 
     override fun loadOptionsMaxLinksCount(): Int {
-        return sharedPreferences.getInt(APP_PREFERENCES_MAX_LINKS_COUNT, 4)
+        return sharedPreferences.getInt(APP_PREFERENCES_MAX_LINKS_COUNT, 3)
     }
 
     override fun saveOptionsMaxLinksCount(maxLinksCount: Int) {
@@ -129,7 +129,7 @@ class Storage(private val context: Context) : IStorage {
     }
 
     override fun loadOptionsRadiusDot(): Int {
-        return sharedPreferences.getInt(APP_PREFERENCES_RADIUS_DOT, 25)
+        return sharedPreferences.getInt(APP_PREFERENCES_RADIUS_DOT, 30)
     }
 
     override fun saveOptionsRadiusDot(radius: Int) {

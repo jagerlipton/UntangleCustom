@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
+import androidx.navigation.findNavController
 import com.jagerlipton.dots_lines.R
 import com.jagerlipton.dots_lines.engine.DrawMachine
 import com.jagerlipton.dots_lines.engine.GameThread
@@ -16,13 +17,10 @@ import com.jagerlipton.dots_lines.engine.model.Dot
 import com.jagerlipton.dots_lines.engine.model.GameColors
 import com.jagerlipton.dots_lines.engine.model.Line
 import com.jagerlipton.dots_lines.storage.storage.IStorage
+import kotlinx.coroutines.*
 import org.koin.java.KoinJavaComponent.inject
-import java.lang.Thread.sleep
-import kotlin.math.PI
-import kotlin.math.cos
-import kotlin.math.sin
-import kotlin.math.sqrt
-
+import kotlin.coroutines.CoroutineContext
+import kotlin.math.*
 
 class CustomSurfaceView(context: Context, attributes: AttributeSet) :
     SurfaceView(context, attributes),
@@ -35,11 +33,81 @@ class CustomSurfaceView(context: Context, attributes: AttributeSet) :
     private val storage by inject<IStorage>(IStorage::class.java)
     private var gameover: Boolean = true
     private val drawMachine: DrawMachine = DrawMachine(gameColors)
+    private var textSize: Float = 0F
+    private val coroutineDefaultContext: CoroutineContext get() = Dispatchers.Default + SupervisorJob()
+    private val coroutineMainContext: CoroutineContext get() = Dispatchers.Main
+    private val coroutineScope: CoroutineScope = CoroutineScope(coroutineDefaultContext)
 
     init {
         holder.addCallback(this)
         holder.setFormat(PixelFormat.TRANSLUCENT)
         isFocusable = true
+    }
+
+
+    override fun surfaceCreated(p0: SurfaceHolder) {
+        onLaunchSurface()
+        thread = GameThread(holder, this)
+        thread.setRunning(true)
+        thread.start()
+    }
+
+    override fun surfaceChanged(p0: SurfaceHolder, p1: Int, p2: Int, p3: Int) {
+        //
+    }
+
+    override fun surfaceDestroyed(p0: SurfaceHolder) {
+       coroutineScope.cancel()
+       saveGame()
+        var retry = true
+        while (retry) {
+            try {
+                thread.setRunning(false)
+                thread.join()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            retry = false
+        }
+    }
+
+    fun update() {
+
+    }
+
+    override fun draw(canvas: Canvas) {
+        super.draw(canvas)
+        drawMachine.draw(canvas, dotList, linesSet)
+        if (gameover) drawMachine.drawText(canvas, textSize, "WIN")
+    }
+
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            circleNumber = numberCircleOnTouch(dotList, event.x.toInt(), event.y.toInt())
+            if (circleNumber >= 0) {
+                dotList[circleNumber].setTouchStatus(true)
+                dotList[circleNumber].getLinksSet().forEach() { dotList[it].setTouchStatus(true) }
+            }
+        }
+        if (event.action == MotionEvent.ACTION_MOVE) {
+            if (circleNumber >= 0) {
+                if (event.x.toInt() >= dotList[circleNumber].getRadius() && event.x.toInt() < this.width - dotList[circleNumber].getRadius()) dotList[circleNumber].setX(
+                    event.x.toInt()
+                )
+                if (event.y.toInt() >= dotList[circleNumber].getRadius() && event.y.toInt() < this.height - dotList[circleNumber].getRadius()) dotList[circleNumber].setY(
+                    event.y.toInt()
+                )
+            }
+        }
+        if (event.action == MotionEvent.ACTION_UP) {
+            if (circleNumber >= 0) {
+                dotList[circleNumber].setTouchStatus(false)
+                dotList[circleNumber].getLinksSet().forEach() { dotList[it].setTouchStatus(false) }
+                circleNumber = -1
+                if (!checkLineList(dotList, linesSet.toList())) coroutineScope.launch (coroutineMainContext) { victory()}
+            }
+        }
+        return true
     }
 
     private fun onLaunchSurface() {
@@ -58,6 +126,14 @@ class CustomSurfaceView(context: Context, attributes: AttributeSet) :
         gameover = false
     }
 
+    private fun createGame(dotCount: Int, maxLinksCount: Int, radius: Int) {
+        for (i: Int in 0 until dotCount) {
+            dotList.add(Dot(i, 0, 0, radius, HashSet()))
+        }
+        alignmentDots(dotList)
+        generateLines(dotList, maxLinksCount)
+    }
+
     private fun loadGame() {
         dotList = storage.loadGameDots() as MutableList<Dot>
         linesSet = storage.loadGameLines() as HashSet<Line>
@@ -74,39 +150,6 @@ class CustomSurfaceView(context: Context, attributes: AttributeSet) :
                 storage.saveGameDots(dotList)
                 storage.saveGameLines(linesSet)
             }
-        }
-    }
-
-    private fun createGame(dotCount: Int, maxLinksCount: Int, radius: Int) {
-        for (i: Int in 0 until dotCount) {
-            dotList.add(Dot(i, 0, 0, radius, HashSet()))
-        }
-        alignmentDots(dotList)
-        generateLines(dotList, maxLinksCount)
-    }
-
-    override fun surfaceCreated(p0: SurfaceHolder) {
-        onLaunchSurface()
-        thread = GameThread(holder, this)
-        thread.setRunning(true)
-        thread.start()
-    }
-
-    override fun surfaceChanged(p0: SurfaceHolder, p1: Int, p2: Int, p3: Int) {
-        // TODO("Not yet implemented")
-    }
-
-    override fun surfaceDestroyed(p0: SurfaceHolder) {
-        saveGame()
-        var retry = true
-        while (retry) {
-            try {
-                thread.setRunning(false)
-                thread.join()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-            retry = false
         }
     }
 
@@ -175,7 +218,7 @@ class CustomSurfaceView(context: Context, attributes: AttributeSet) :
             y = r * sin(phi)
             list[i].setX(centerX.toInt() + x.toInt())
             list[i].setY(centerY.toInt() + y.toInt())
-        }//
+        }
     }
 
     private fun patternSpiral(list: List<Dot>) {
@@ -191,7 +234,6 @@ class CustomSurfaceView(context: Context, attributes: AttributeSet) :
             centerY = (width / 2).toDouble()
         }
         val interval: Double = 80.0
-        val rSafe: Int = (interval / 2).toInt()
         val a: Double = -0.2 * interval
         var x = 0.0
         var y = 0.0
@@ -206,17 +248,15 @@ class CustomSurfaceView(context: Context, attributes: AttributeSet) :
             y += ty * k
             list[i].setX(centerX.toInt() + x.toInt())
             list[i].setY(centerY.toInt() + y.toInt())
-        }//
+        }
     }
 
-
     private fun alignmentDots(list: List<Dot>) {
-           patternCircle(list)
+        patternCircle(list)
         //  patternStorm(list)
         //   patternSpiral(list)
         // when ...etc pattern
     }
-
 
     private fun generateLines(list: List<Dot>, maxLinksCount: Int) {
 // здесь должен быть генератор плоского графа
@@ -279,7 +319,13 @@ class CustomSurfaceView(context: Context, attributes: AttributeSet) :
             }
     }
 
-    private fun pointInsideCircle(circleX: Int, circleY: Int, dotX: Int, dotY: Int, radius: Int): Boolean {
+    private fun pointInsideCircle(
+        circleX: Int,
+        circleY: Int,
+        dotX: Int,
+        dotY: Int,
+        radius: Int
+    ): Boolean {
         val FATFINGER = 20
         return ((circleX - dotX) * (circleX - dotX) + (circleY - dotY) * (circleY - dotY) <= (radius + FATFINGER) * (radius + FATFINGER))
     }
@@ -363,80 +409,57 @@ class CustomSurfaceView(context: Context, attributes: AttributeSet) :
         return false
     }
 
-    override fun onTouchEvent(event: MotionEvent): Boolean {
-        if (event.action == MotionEvent.ACTION_DOWN) {
-            circleNumber = numberCircleOnTouch(dotList, event.x.toInt(), event.y.toInt())
-            if (circleNumber >= 0) {
-                dotList[circleNumber].setTouchStatus(true)
-                dotList[circleNumber].getLinksSet().forEach() { dotList[it].setTouchStatus(true) }
-            }
-        }
-        if (event.action == MotionEvent.ACTION_MOVE) {
-            if (circleNumber >= 0) {
-                if (event.x.toInt() >= dotList[circleNumber].getRadius() && event.x.toInt() < this.width - dotList[circleNumber].getRadius()) dotList[circleNumber].setX(
-                    event.x.toInt()
-                )
-                if (event.y.toInt() >= dotList[circleNumber].getRadius() && event.y.toInt() < this.height - dotList[circleNumber].getRadius()) dotList[circleNumber].setY(
-                    event.y.toInt()
-                )
-            }
-        }
-        if (event.action == MotionEvent.ACTION_UP) {
-            if (circleNumber >= 0) {
-                dotList[circleNumber].setTouchStatus(false)
-                dotList[circleNumber].getLinksSet().forEach() { dotList[it].setTouchStatus(false) }
-                circleNumber = -1
-                if (!checkLineList(dotList, linesSet.toList())) victory()
-            }
-        }
-        return true
-    }
-
-    private fun victory() {
-        victoryAnimateFlush()
+    private suspend fun victory() {
         gameover = true
+        coroutineScope.launch(coroutineDefaultContext) {
+            victoryStart()
+        }.join()
+        coroutineScope.launch(coroutineDefaultContext) {
+            linesSet.clear()
+            dotList.forEach() { launch() { flushDot(it) } }
+        }.join()
+        coroutineScope.launch(coroutineDefaultContext) { victoryEnd() }.join()
+        navigateToOptions()
     }
 
-    private fun victoryAnimateFlush() {
-        val baseX: Int = this.width / 2 // x координата центра экрана
-        val baseY: Int = this.height / 2 // y координата центра экрана
-        var i: Int = 0
-        linesSet.clear()
+    private fun navigateToOptions(){
+       try {
+           findNavController().navigate(R.id.action_navigation_game_to_navigation_options2)
+       }
+       catch (e: Exception) {
+           e.printStackTrace()
+       }
+    }
 
-        while (dotList.size > 0) {
-            val x1: Int = dotList[i].getX() - baseX
-            val y1: Int = dotList[i].getY() - baseY
+    private suspend fun victoryStart() {
+        for (i in 0..250) {
+            textSize += 1
+            delay(1L)
+        }
+        delay(1000L)
+    }
+
+    private suspend fun victoryEnd() {
+        for (i in 0..600) {
+            textSize += 4
+            delay(1L)
+        }
+    }
+
+    private suspend fun flushDot(dot: Dot) {
+        val baseX: Int = this.width / 2
+        val baseY: Int = this.height / 2
+        while (dot.getRadius() > 0) {
+            val x1: Int = dot.getX() - baseX
+            val y1: Int = dot.getY() - baseY
             val c: Double = (sqrt((x1 * x1 + y1 * y1).toDouble()))
-            val step: Double = 2.0
+            val step: Double = 1.0
             val y2: Int = ((y1 * (c - step)) / c).toInt()
             val x2: Int = ((x1 * (c - step)) / c).toInt()
-            dotList[i].setX(baseX + x2)
-            dotList[i].setY(baseY + y2)
-
-            if (dotList[i].getX() - baseX < 10 && dotList[i].getY() - baseY < 10) {
-                if (dotList[i].getRadius() > 0) {
-                    dotList[i].decreaseRadius(1)
-                    if (dotList[i].getRadius() <= 0) {
-                        dotList.removeAt(i)
-                        i -= 1
-                    }
-                }
-            }
-            sleep(0, 2)
-            i += 1
-            if (i >= dotList.size) i = 0
-        }
-    }
-
-    fun update() {
-
-    }
-
-    override fun draw(canvas: Canvas) {
-        super.draw(canvas)
-        when (gameover) {
-            false -> drawMachine.draw(canvas, dotList, linesSet)
-            true -> drawMachine.drawText(canvas, "WIN")
+            dot.setX(baseX + x2)
+            dot.setY(baseY + y2)
+            if (abs(dot.getX() - baseX) < 10 && abs(dot.getY() - baseY) < 10) dot.decreaseRadius(1)
+            delay(1L)
         }
     }
 }

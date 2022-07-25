@@ -35,73 +35,111 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_end="@dimen/guideline_margin" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/editTextDotCount"
-        style="@style/CustomOutlineBox"
+
+    <TextView
+        android:id="@+id/labelSliderDotCount"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="@string/dot_count"
-        app:cornerRadius="@dimen/button_corner_radius"
-        app:layout_constraintBottom_toTopOf="@+id/editTextMaxLinks"
+        android:layout_marginStart="@dimen/edit_margin"
+        android:layout_marginTop="@dimen/edit_margin"
+        android:text="@string/dot_count"
+        android:textColor="@color/button_color"
+        app:layout_constraintBottom_toTopOf="@+id/sliderDotCount"
         app:layout_constraintEnd_toEndOf="@id/endGuideline"
         app:layout_constraintStart_toStartOf="@id/startGuideline"
-        app:layout_constraintTop_toTopOf="@id/topGuideline"
-        app:layout_constraintVertical_chainStyle="packed">
+        app:layout_constraintTop_toBottomOf="@id/topGuideline"
+        app:layout_constraintVertical_chainStyle="packed" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="numberDecimal"
-            android:maxLength="3"
-            android:text="@string/_10"
-            android:textColor="@color/text_input_layout_stroke_color" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/editTextMaxLinks"
-        style="@style/CustomOutlineBox"
+    <com.google.android.material.slider.Slider
+        android:id="@+id/sliderDotCount"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/edit_margin"
-        android:hint="@string/max_count_links_for_one_dot"
-        app:cornerRadius="@dimen/edit_corner_radius"
-        app:layout_constraintBottom_toTopOf="@+id/editTextRadius"
+        android:stepSize="1"
+        android:theme="@style/Slider"
+        android:valueFrom="@dimen/slider_DotCount_min"
+        android:valueTo="@dimen/slider_DotCount_max"
+        app:labelStyle="@style/SliderTooltip"
+        app:layout_constraintBottom_toTopOf="@+id/labelSliderMaxLinksCount"
         app:layout_constraintEnd_toEndOf="@id/endGuideline"
         app:layout_constraintStart_toStartOf="@id/startGuideline"
-        app:layout_constraintTop_toBottomOf="@id/editTextDotCount"
-        app:layout_constraintVertical_chainStyle="spread_inside">
+        app:layout_constraintTop_toBottomOf="@id/labelSliderDotCount"
+        app:layout_constraintVertical_chainStyle="packed" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="numberDecimal"
-            android:maxLength="2"
-            android:text="@string/_4"
-            android:textColor="@color/text_input_layout_stroke_color" />
-    </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/editTextRadius"
-        style="@style/CustomOutlineBox"
+    <TextView
+        android:id="@+id/labelSliderMaxLinksCount"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/edit_margin"
         android:layout_marginTop="@dimen/edit_margin"
-        android:hint="@string/radius"
-        app:cornerRadius="@dimen/edit_corner_radius"
+        android:text="@string/max_count_links_for_one_dot"
+        android:textColor="@color/button_color"
+        app:layout_constraintBottom_toTopOf="@+id/sliderMaxLinksCount"
+        app:layout_constraintEnd_toEndOf="@id/endGuideline"
+        app:layout_constraintStart_toStartOf="@id/startGuideline"
+        app:layout_constraintTop_toBottomOf="@id/sliderDotCount"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/sliderMaxLinksCount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:stepSize="1"
+        android:theme="@style/Slider"
+        android:valueFrom="@dimen/slider_MaxLinksCount_min"
+        android:valueTo="@dimen/slider_MaxLInksCount_max"
+        app:labelStyle="@style/SliderTooltip"
+        app:layout_constraintBottom_toTopOf="@+id/labelSliderRadius"
+        app:layout_constraintEnd_toEndOf="@id/endGuideline"
+        app:layout_constraintStart_toStartOf="@id/startGuideline"
+        app:layout_constraintTop_toBottomOf="@id/labelSliderMaxLinksCount"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <TextView
+        android:id="@+id/labelSliderRadius"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/edit_margin"
+        android:layout_marginTop="@dimen/edit_margin"
+        android:text="@string/radius"
+        android:textColor="@color/button_color"
+        app:layout_constraintBottom_toTopOf="@+id/sliderRadius"
+        app:layout_constraintEnd_toEndOf="@id/endGuideline"
+        app:layout_constraintStart_toStartOf="@id/startGuideline"
+        app:layout_constraintTop_toBottomOf="@id/sliderMaxLinksCount"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/sliderRadius"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:stepSize="1"
+        android:theme="@style/Slider"
+        android:valueFrom="@dimen/slider_Radius_min"
+        android:valueTo="@dimen/slider_Radius_max"
+        app:labelStyle="@style/SliderTooltip"
         app:layout_constraintBottom_toTopOf="@+id/buttonNewGame"
-        app:layout_constraintEnd_toEndOf="@id/endGuideline"
+        app:layout_constraintEnd_toStartOf="@id/sliderRadius_view"
         app:layout_constraintStart_toStartOf="@id/startGuideline"
-        app:layout_constraintTop_toBottomOf="@id/editTextMaxLinks"
-        app:layout_constraintVertical_chainStyle="spread_inside">
+        app:layout_constraintTop_toBottomOf="@id/labelSliderRadius"
+        app:layout_constraintVertical_chainStyle="packed"/>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="numberDecimal"
-            android:maxLength="2"
-            android:text="@string/_25"
-            android:textColor="@color/text_input_layout_stroke_color" />
-    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.slider.Slider
+        android:id="@+id/sliderRadius_view"
+        android:layout_width="@dimen/slider_RadiusView_width"
+        android:layout_height="0dp"
+        android:theme="@style/Slider"
+        android:valueFrom="@dimen/slider_RadiusView_min"
+        android:valueTo="@dimen/slider_RadiusView_max"
+        android:value="@dimen/slider_RadiusView_value"
+        android:enabled="false"
+        app:trackColor="@color/game_bg"
+        app:thumbColor="@color/slider_trackColorActive"
+        app:labelStyle="@style/SliderTooltip"
+        app:layout_constraintTop_toTopOf="@+id/sliderRadius"
+        app:layout_constraintEnd_toStartOf="@id/endGuideline"
+        app:layout_constraintStart_toEndOf="@id/sliderRadius"
+        app:layout_constraintBottom_toBottomOf="@+id/sliderRadius" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonNewGame"

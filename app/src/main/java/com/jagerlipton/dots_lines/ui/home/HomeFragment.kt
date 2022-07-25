@@ -56,7 +56,7 @@ class HomeFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        homeViewModel.isGameOver().observe(this, gameOverObserver)
+        homeViewModel.gameOver.observe(this, gameOverObserver)
     }
 
     override fun onResume() {
@@ -66,6 +66,6 @@ class HomeFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
-        homeViewModel.isGameOver().removeObserver(gameOverObserver)
+        homeViewModel.gameOver.removeObserver(gameOverObserver)
     }
 }

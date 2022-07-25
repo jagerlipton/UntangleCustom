@@ -7,37 +7,31 @@ import com.jagerlipton.dots_lines.storage.storage.IStorage
 
 class OptionsViewModel(private val storage: IStorage) : ViewModel() {
 
-    private val dotCount = MutableLiveData(storage.loadOptionsDotCount())
-    fun getDotCount(): LiveData<Int> {
-        return dotCount
-    }
+    private val _dotCount = MutableLiveData(storage.loadOptionsDotCount())
+    val dotCount: LiveData<Int> get() = _dotCount
 
     fun setDotCount(count: Int) {
-        dotCount.value = count
+        _dotCount.value = count
     }
 
-    private val maxLinksCount = MutableLiveData(storage.loadOptionsMaxLinksCount())
-    fun getMaxLinksCount(): LiveData<Int> {
-        return maxLinksCount
-    }
+    private val _maxLinksCount = MutableLiveData(storage.loadOptionsMaxLinksCount())
+    val maxLinksCount: LiveData<Int> get() = _maxLinksCount
 
     fun setMaxLinksCount(count: Int) {
-        maxLinksCount.value = count
+        _maxLinksCount.value = count
     }
 
-    private val radiusDot = MutableLiveData(storage.loadOptionsRadiusDot())
-    fun getRadius(): LiveData<Int> {
-        return radiusDot
-    }
+    private val _radiusDot = MutableLiveData(storage.loadOptionsRadiusDot())
+    val radiusDot: LiveData<Int> get() = _radiusDot
 
     fun setRadius(radius: Int) {
-        radiusDot.value = radius
+        _radiusDot.value = radius
     }
 
     fun savePrefs() {
-        if (dotCount.value != null) storage.saveOptionsDotCount(dotCount.value!!)
-        if (maxLinksCount.value != null) storage.saveOptionsMaxLinksCount(maxLinksCount.value!!)
-        if (radiusDot.value != null) storage.saveOptionsRadiusDot(radiusDot.value!!)
+        storage.saveOptionsDotCount(dotCount.value ?: 10)
+        storage.saveOptionsMaxLinksCount(maxLinksCount.value ?: 3)
+        storage.saveOptionsRadiusDot(radiusDot.value ?: 30)
     }
 
     fun newCustomGame() {

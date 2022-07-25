@@ -22,37 +22,64 @@ class DrawMachine(private val gameColors: GameColors) {
     }
 
     private fun drawDots(canvas: Canvas, gameColors: GameColors, dotList: List<Dot>) {
-        dotList.forEach() {
-            val paint = Paint()
-            paint.style = Paint.Style.FILL
-            if (!it.isTouched()) paint.color = gameColors.game_untouched_circle_fill
-            else paint.color = gameColors.game_touched_circle_fill
-            canvas.drawCircle(
-                it.getX().toFloat(),
-                it.getY().toFloat(),
-                it.getRadius().toFloat(),
-                paint
-            )
-            paint.style = Paint.Style.STROKE
-            paint.strokeWidth = 2F
-            if (!it.isTouched()) paint.color = gameColors.game_untouched_circle_stroke
-            else paint.color = gameColors.game_touched_circle_stroke
-            canvas.drawCircle(
-                it.getX().toFloat(),
-                it.getY().toFloat(),
-                it.getRadius().toFloat(),
-                paint
-            )
+        val paintFillUntouched = Paint()
+        paintFillUntouched.style = Paint.Style.FILL
+        paintFillUntouched.color = gameColors.game_untouched_circle_fill
 
+        val paintFillTouched = Paint()
+        paintFillTouched.style = Paint.Style.FILL
+        paintFillTouched.color = gameColors.game_touched_circle_fill
+
+        val paintStrokeUntouched = Paint()
+        paintStrokeUntouched.style = Paint.Style.STROKE
+        paintStrokeUntouched.strokeWidth = 2F
+        paintStrokeUntouched.color = gameColors.game_untouched_circle_stroke
+
+        val paintStrokeTouched = Paint()
+        paintStrokeTouched.style = Paint.Style.STROKE
+        paintStrokeTouched.strokeWidth = 2F
+        paintStrokeTouched.color = gameColors.game_touched_circle_stroke
+
+        dotList.forEach() {
+            if (!it.isTouched())
+            {
+                canvas.drawCircle(
+                    it.getX().toFloat(),
+                    it.getY().toFloat(),
+                    it.getRadius().toFloat(),
+                    paintFillUntouched
+                )
+                canvas.drawCircle(
+                    it.getX().toFloat(),
+                    it.getY().toFloat(),
+                    it.getRadius().toFloat(),
+                    paintStrokeUntouched
+                )
+            }
+            else {
+                canvas.drawCircle(
+                    it.getX().toFloat(),
+                    it.getY().toFloat(),
+                    it.getRadius().toFloat(),
+                    paintFillTouched
+                )
+                canvas.drawCircle(
+                    it.getX().toFloat(),
+                    it.getY().toFloat(),
+                    it.getRadius().toFloat(),
+                    paintStrokeTouched
+                )
+            }
         }
     }
 
     private fun drawLines(canvas: Canvas, gameColors: GameColors, dotList: List<Dot>, linesSet: Set<Line> ) {
+        val paint = Paint()
+        paint.style = Paint.Style.STROKE
+        paint.strokeWidth = 4F
+        paint.color = gameColors.game_untouched_lines
+
         linesSet.forEach() {
-            val paint = Paint()
-            paint.style = Paint.Style.STROKE
-            paint.strokeWidth = 4F
-            paint.color = gameColors.game_untouched_lines
             canvas.drawLine(
                 dotList[it.dot1].getX().toFloat(),
                 dotList[it.dot1].getY().toFloat(),
@@ -63,15 +90,11 @@ class DrawMachine(private val gameColors: GameColors) {
         }
     }
 
-    fun drawText(canvas: Canvas, text:String){
+    fun drawText(canvas: Canvas,textSize:Float, text:String){
         val paint = Paint()
-        paint.color = gameColors.game_bg
-        paint.style = Paint.Style.FILL
-        canvas.drawRect(0F, 0F, canvas.width.toFloat(), canvas.height.toFloat(), paint)
         paint.color = gameColors.game_untouched_circle_fill
         paint.style = Paint.Style.FILL
-        paint.isAntiAlias = true
-        paint.textSize = 200F
+        paint.textSize = textSize
         val typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
         paint.typeface = typeface
         paint.setShadowLayer(10.0f, 0.0f, 0.0f, Color.BLACK)

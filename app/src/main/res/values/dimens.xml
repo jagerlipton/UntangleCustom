@@ -5,4 +5,14 @@
     <dimen name="button_corner_radius">5dp</dimen>
     <dimen name="edit_corner_radius">5dp</dimen>
     <dimen name="edit_margin">10dp</dimen>
+    <dimen name="slider_DotCount_min">5</dimen>
+    <dimen name="slider_DotCount_max">500</dimen>
+    <dimen name="slider_MaxLinksCount_min">2</dimen>
+    <dimen name="slider_MaxLInksCount_max">6</dimen>
+    <dimen name="slider_Radius_min">20</dimen>
+    <dimen name="slider_Radius_max">65</dimen>
+    <dimen name="slider_RadiusView_min">0</dimen>
+    <dimen name="slider_RadiusView_max">2</dimen>
+    <dimen name="slider_RadiusView_value">1</dimen>
+    <dimen name="slider_RadiusView_width">60dp</dimen>
 </resources>

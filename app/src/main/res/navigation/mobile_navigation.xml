@@ -30,9 +30,10 @@
         android:label="@string/title_game"
         tools:layout="@layout/fragment_game" >
         <action
-            android:id="@+id/action_navigation_game_to_navigation_home"
-            app:destination="@id/navigation_home"
-            app:launchSingleTop="false"
+            android:id="@+id/action_navigation_game_to_navigation_options2"
+            app:destination="@id/navigation_options"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/navigation_home"
             app:popUpToInclusive="false" />
     </fragment>
 

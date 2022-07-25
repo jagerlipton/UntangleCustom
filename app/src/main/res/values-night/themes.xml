@@ -21,4 +21,19 @@
         <item name="hintTextColor">@color/button_stroke</item>
     </style>
 
+    <style name="SliderTooltip" parent="Widget.MaterialComponents.Tooltip">
+        <item name="backgroundTint">@color/game_bg</item>
+        <item name="android:textAppearance">@style/SliderTooltip.TextAppearance</item>
+    </style>
+
+    <style name="SliderTooltip.TextAppearance" parent="@style/TextAppearance.MaterialComponents.Tooltip">
+        <item name="android:textColor">@color/button_stroke</item>
+    </style>
+
+    <style name="Slider" parent="Widget.MaterialComponents.Slider">
+        <item name="trackColorActive">@color/slider_trackColorActive</item>
+        <item name="trackColorInactive">@color/slider_trackColorInactive</item>
+    </style>
+
+
 </resources>
